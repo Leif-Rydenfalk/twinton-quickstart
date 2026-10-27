@@ -167,7 +167,9 @@ export async function start(ctx) {
       // The bridge is third-party, mutable text. Coerce and bound everything before it reaches the panel.
       S.bridge = bj && typeof bj === "object" ? {
         thread: bj.thread == null ? null : String(bj.thread).slice(0, 60),
-        trust: { score: Number.isFinite(+bj.trust?.score) ? +bj.trust.score : null },
+        trust: { score: Number.isFinite(+bj.trust?.score) ? +bj.trust.score : null,
+                 verified: Number.isFinite(+bj.trust?.verified) ? +bj.trust.verified : 0,
+                 reviews: Number.isFinite(+bj.trust?.reviews) ? +bj.trust.reviews : 0 },
         mesh: { twins: Number.isFinite(+bj.mesh?.twins) ? +bj.mesh.twins : 0, sources: Number.isFinite(+bj.mesh?.sources) ? +bj.mesh.sources : 0 },
         updated: Number.isFinite(+bj.updated) ? +bj.updated : 0,
       } : null;
@@ -322,7 +324,8 @@ export async function start(ctx) {
     const age = b.updated ? (Date.now() / 1000 - b.updated) : Infinity;
     if (age > 24 * 3600) return { text: `snapshot stale ${Math.round(age / 3600)}h`, color: C.tide };
     const trust = b.trust?.score == null ? "unverified" : `trust ${b.trust.score}`;
-    return { text: b.thread ? `${b.thread} · ${trust}` : `snapshot · no thread yet · ${trust}`, color: C.gate };
+    const reviews = b.trust?.reviews ? ` · ${b.trust.reviews} reviews` : "";
+    return { text: (b.thread ? `${b.thread} · ${trust}` : `snapshot · no thread yet · ${trust}`) + reviews, color: C.gate };
   }
   function renderPanel() {
     const b = S.bridge, bs = bridgeState();
@@ -353,7 +356,7 @@ export async function start(ctx) {
       { name: "NOAA CO-OPS 8518750", sub: "observed · 6 min · preliminary · m MLLW", color: C.obs },
       { name: "NOAA harmonic tide", sub: "prediction · 6 min · external model", color: C.tide },
       { name: "Open-Meteo", sub: S.wx ? "wind + pressure · hourly model" : "unavailable", color: C.twin },
-      { name: "Trana bridge (snapshot)", sub: b ? `${b.thread || "no thread yet"} · ${b.trust?.score == null ? "unverified" : "trust " + b.trust.score}` : "offline", color: bs.color },
+      { name: "Trana bridge (snapshot)", sub: b ? `${b.thread || "no thread yet"} · ${b.trust?.score == null ? "unverified" : "trust " + b.trust.score} · ${b.trust?.reviews || 0} reviews` : "offline", color: bs.color },
     ];
     const summary = S.obsV == null ? "No live reading." : `Observed ${fmt(S.obsV)} m · tide ${fmt(S.predV)} m · twin ${fmt(S.twinV)} m · holdout ${fmt(S.model?.maeTwin, 3)} m vs tide ${fmt(S.model?.maeTide, 3)} m · ${S.model?.chosen || "no model"}.`;
     ctx.panel({
