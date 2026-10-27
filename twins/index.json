@@ -1,0 +1,14 @@
+{
+  "schema": "twinton.mesh/1",
+  "twins": [
+    {
+      "id": "battery-tide-twin",
+      "title": "The Battery tide gauge, live",
+      "thread": null,
+      "trust": 0.0,
+      "sources": 1
+    }
+  ],
+  "sources": 1,
+  "updated": 1793060241
+}

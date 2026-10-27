@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://twinton-quickstart.ce-net.com/schema/trana-bridge.json",
+  "title": "twinton.trana/1 — the social and trust bridge for one Twinton twin",
+  "type": "object",
+  "required": ["schema", "twin", "updated"],
+  "properties": {
+    "schema": { "const": "twinton.trana/1" },
+    "twin": { "type": "string", "description": "the Twinton app id; must match the manifest id" },
+    "title": { "type": "string" },
+    "thread": { "type": ["string", "null"], "description": "Trana thread id, e.g. t-..." },
+    "thread_url": { "type": ["string", "null"], "format": "uri" },
+    "proposal": { "type": ["string", "null"], "description": "optional Trana proposal id" },
+    "trust": {
+      "type": "object",
+      "properties": {
+        "account": { "type": "string" },
+        "score": { "type": "number" },
+        "verified": { "type": "integer" },
+        "reviews": { "type": "integer" },
+        "last_review": { "type": ["integer", "null"] }
+      }
+    },
+    "mesh": {
+      "type": "object",
+      "properties": {
+        "twins": { "type": "integer" },
+        "sources": { "type": "integer" },
+        "threads": { "type": "integer" },
+        "updated": { "type": "integer" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "url", "kind"],
+        "properties": {
+          "id": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "kind": { "enum": ["observed", "recorded", "simulated", "mixed"] },
+          "cadence_s": { "type": "integer" },
+          "units": { "type": "string" },
+          "credit": { "type": "string" }
+        }
+      }
+    },
+    "streams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "enum": ["observed", "model", "social", "review"] },
+          "url": { "type": ["string", "null"] },
+          "state": { "type": "string" }
+        }
+      }
+    },
+    "updated": { "type": "integer", "description": "unix seconds when this bridge was generated" }
+  }
+}

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Twinton quick start — one place, one live source, one honest model</title>
+<style>
+:root{--bg:#f5f6f2;--ink:#141711;--dim:#5d6359;--line:#d9ddd2;--card:#fff;--acc:#0f766e;--acc2:#b45309;--bad:#b42318;--mono:ui-monospace,SFMono-Regular,Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#0d100d;--ink:#e9ede5;--dim:#9aa295;--line:#2a3128;--card:#141914;--acc:#5eead4;--acc2:#fb923c;--bad:#f87171}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:980px;margin:0 auto;padding:28px 20px 90px}
+.nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;color:var(--dim);border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:34px}
+.nav a{color:var(--dim)}
+.hero{padding:8px 0 26px}
+.kicker{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--acc2)}
+h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-.045em;margin:14px 0 16px;font-weight:750}
+h1 em{font-style:normal;color:var(--acc)}
+.lede{font-size:19px;line-height:1.5;color:var(--dim);max-width:760px;margin:0 0 26px}
+.band{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:26px 0 8px}
+.stat{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:15px 16px}
+.stat b{display:block;font:650 25px/1.1 var(--mono);letter-spacing:-.03em}
+.stat span{display:block;color:var(--dim);font-size:12.5px;margin-top:4px}
+h2{font-size:28px;letter-spacing:-.03em;line-height:1.15;margin:54px 0 10px}
+h3{font-size:19px;letter-spacing:-.01em;margin:30px 0 8px}
+p{margin:0 0 14px}
+ul,ol{padding-left:22px;margin:0 0 16px}li{margin:7px 0}
+.card{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:18px 20px;margin:20px 0}
+.card h3{margin-top:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+code{font:13.5px/1.5 var(--mono);background:color-mix(in srgb,var(--ink) 7%,transparent);padding:1px 5px;border-radius:5px}
+pre{background:color-mix(in srgb,var(--ink) 6%,transparent);border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow:auto;margin:14px 0;font:13px/1.55 var(--mono);white-space:pre-wrap;word-break:break-word}
+pre code{background:none;padding:0;font:inherit}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:14px 0}
+th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--dim);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em}
+.pill{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--dim);margin-right:6px}
+.pill.ok{color:var(--acc);border-color:color-mix(in srgb,var(--acc) 45%,var(--line))}
+.pill.warn{color:var(--acc2);border-color:color-mix(in srgb,var(--acc2) 45%,var(--line))}
+.pill.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
+.note{border-left:3px solid var(--acc2);padding:10px 14px;background:color-mix(in srgb,var(--acc2) 6%,transparent);border-radius:0 10px 10px 0;margin:16px 0;font-size:14.5px}
+.oknote{border-left:3px solid var(--acc);padding:10px 14px;background:color-mix(in srgb,var(--acc) 6%,transparent);border-radius:0 10px 10px 0;margin:16px 0;font-size:14.5px}
+.muted{color:var(--dim);font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:60px;padding-top:18px;color:var(--dim);font-size:13px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:14px;margin:18px 0}
+.step .n{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font:650 13px var(--mono);color:var(--acc)}
+.step h3{margin:0 0 4px;font-size:17px}
+.step p{margin:0;color:var(--dim);font-size:14.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav">
+    <a href="#path">20-minute path</a><a href="#contract">The contract</a><a href="#ctx">ctx</a>
+    <a href="#data">Live data + model</a><a href="#review">Review</a><a href="#bridge">Trana bridge</a>
+    <a href="#starter">Starter</a><a href="#gotchas">Gotchas</a>
+  </nav>
+
+  <header class="hero">
+    <div class="kicker">Twinton / maps.ce-net.com</div>
+    <h1>One place. One live source. <em>One honest model.</em></h1>
+    <p class="lede">A twin is not a pretty model. It is a claim about a real place, with a data source, a simulation, a measured error, and a reviewer. This page is the shortest path from nothing to a published twin on the globe — and the contract that makes it checkable.</p>
+    <div class="band">
+      <div class="stat"><b>1</b><span>place, instrument or process</span></div>
+      <div class="stat"><b>1</b><span>real-time open source, named</span></div>
+      <div class="stat"><b>1</b><span>model, with a holdout error</span></div>
+      <div class="stat"><b>70</b><span>review score to publish</span></div>
+    </div>
+    <div class="oknote"><b>First bridge:</b> <a href="https://maps.ce-net.com/?app=battery-tide-twin">The Battery tide gauge, live</a> — NOAA observed water level vs a harmonic tide + surge model, with a Trana trust/data bridge. Source and bridge below.</div>
+  </header>
+
+  <h2 id="path">The 20-minute path</h2>
+  <p>Do these in order. The order matters: a failed data URL or a missing bridge file is a <em>page error</em> in the render check, and the twin will not publish even if the review passes.</p>
+
+  <div class="step"><div class="n">1</div><div><h3>Pick one place and one live source</h3><p>Not a category. One place with coordinates, one instrument or process, one URL that returns JSON with CORS. Write down the units, datum, cadence and whether it is observed, recorded or simulated. If the source has no CORS, stop here — the sandbox cannot proxy it.</p></div></div>
+  <div class="step"><div class="n">2</div><div><h3>Copy the starter</h3><p>Take <a href="starter/app.json">starter/app.json</a> and <a href="starter/entry.js">starter/entry.js</a>. Change the coordinate, the source URL, the panel title and the model. Keep the shape: build the scene first, fetch second, panel last.</p></div></div>
+  <div class="step"><div class="n">3</div><div><h3>Run it locally over HTTPS</h3><p><code>?app=http://127.0.0.1:PORT/app.json</code> works in principle, but a page served over HTTPS may refuse a module import over HTTP. The reliable local loop is a tunnel: <code>cloudflared tunnel --url http://127.0.0.1:PORT</code>, then open <code>https://maps.ce-net.com/?app=https://&lt;tunnel&gt;/app.json</code>. Serve with <code>Access-Control-Allow-Origin: *</code>.</p></div></div>
+  <div class="step"><div class="n">4</div><div><h3>Dry-run the review</h3><p>Call <code>twin_submit</code> with <code>dry: true</code>. It returns a score, reasons, fixes and checks (<code>static</code>, <code>owner</code>, <code>ai</code>, <code>render</code>). Iterate until the AI score is ≥ 70 <em>and</em> the render check has no page errors. A dry run publishes nothing.</p></div></div>
+  <div class="step"><div class="n">5</div><div><h3>Publish the bridge, then the twin</h3><p>The manifest's <code>data</code> URLs are fetched by the live page. If the Trana bridge JSON does not exist yet, that 404 is counted as a render error. Publish the static bridge first (or remove the URL until it is live), then submit.</p></div></div>
+  <div class="step"><div class="n">6</div><div><h3>Attach the thread, trust and accuracy</h3><p>Open a Trana thread for the twin, put its id in the bridge JSON, republish the bridge, and post the holdout error and the source. The twin panel now has a social and trust layer, not just a model.</p></div></div>
+
+  <h2 id="contract">The contract</h2>
+  <p>A third-party twin is two files: <code>app.json</code> (a manifest) and <code>entry.js</code> (an ES module exporting <code>start(ctx)</code>). The manifest is fetched first; the module is imported into a sandboxed iframe with no same-origin access. The host checks every call against the manifest's <code>needs</code>.</p>
+  <pre><code>{
+  "id": "lowercase-id",
+  "title": "3–60 characters",
+  "what": "20–240 chars: what it shows and where the data comes from",
+  "kind": "twin",
+  "needs": ["local", "box", "orbit", "panel", "steps", "data"],
+  "data": ["https://api.example.org/observed.json"],
+  "models": [],
+  "entry": "entry.js"
+}</code></pre>
+  <table>
+    <tr><th>field</th><th>rule</th></tr>
+    <tr><td><code>id</code></td><td>3–40 of <code>a-z0-9-</code>; the id stays yours; a new submission with the same id updates it.</td></tr>
+    <tr><td><code>what</code></td><td>Say what it shows and where the numbers come from. “Live” is only allowed if a live URL is in <code>data</code>.</td></tr>
+    <tr><td><code>kind</code></td><td><code>twin</code> for a real place/instrument/process; <code>scene</code> for a lesson or a visual with no operational claim; <code>layer</code> for data on the globe; <code>lesson</code> for a guided teaching piece.</td></tr>
+    <tr><td><code>needs</code></td><td>Every non-free ctx op you call. <code>set</code>, <code>remove</code>, <code>data</code>, <code>every</code>, <code>on</code> and <code>log</code> are allowed without listing. Declaring fewer than you use gets the call refused with the missing op.</td></tr>
+    <tr><td><code>data</code></td><td>Exact HTTPS URLs. Only these can be fetched by <code>ctx.data</code>. A failed fetch is a page error in the render check, so publish the file before the twin.</td></tr>
+    <tr><td><code>entry</code></td><td>The module file. For <code>twin_submit</code>, send the source as <code>entry_js</code> (200 B–256 KB) or a URL as <code>entry_url</code>; the service writes the manifest.</td></tr>
+  </table>
+
+  <h2 id="ctx">The ctx reference</h2>
+  <p>The sandbox exposes a small, generic surface. There is no DOM, no <code>fetch</code> except <code>ctx.data</code>, no storage, no eval, and no three.js. Every object you add is removed when the app unloads.</p>
+  <table>
+    <tr><th>op</th><th>what it does / what to know</th></tr>
+    <tr><td><code>ctx.local(lat,lon)</code></td><td>A local frame in metres: x east, y up, z south. Await its handle; pass it as <code>frame</code> to every box/model.</td></tr>
+    <tr><td><code>ctx.box({frame,size,at,color,emissive,heading})</code></td><td>The building block. <code>at</code> is the base, <code>size</code> is metres. Returns a handle for <code>ctx.set</code>. Use boxes for buildings, water, piers, chart bars, even trees.</td></tr>
+    <tr><td><code>ctx.model(lat,lon,url,{...})</code></td><td>A glTF/GLB in metres. URL must be in <code>models</code>. <code>fit</code>, <code>near</code> (level of detail), <code>frame</code>.</td></tr>
+    <tr><td><code>ctx.points(rows,{lift})</code></td><td>One draw call for many globe points: <code>[lat,lon,size,"#rrggbb"]</code>. Not local metres.</td></tr>
+    <tr><td><code>ctx.arc(a,b,color,opacity)</code></td><td>A great-circle arc between two <code>[lat,lon]</code> places. Not for local links.</td></tr>
+    <tr><td><code>ctx.ring(lat,lon,size,color,period)</code></td><td>A pulsing ring flat on the ground. <code>size</code> is in globe radii, not metres.</td></tr>
+    <tr><td><code>ctx.orbit(lat,lon,dist,{heading,tilt,min})</code></td><td>Close 3D: orbit a ground target at <code>dist</code> metres. <code>min</code> is the closest the viewer may zoom.</td></tr>
+    <tr><td><code>ctx.fly(lat,lon,alt)</code></td><td>Fly the camera on the globe; <code>alt</code> is in globe radii (0.18 ≈ 1,100 km).</td></tr>
+    <tr><td><code>ctx.base(name,on)</code></td><td>Hide a base layer: <code>density</code>, <code>lanes</code>, <code>links</code>, <code>twins</code>.</td></tr>
+    <tr><td><code>ctx.panel({title,sub,rows,list,actions,source})</code></td><td>The panel. <code>rows</code> is <code>[label,value]</code>; <code>actions</code> are buttons with <code>onClick</code>; <code>list</code> is clickable sources. There is no <code>body</code> in the sandbox — build charts from boxes or rows.</td></tr>
+    <tr><td><code>ctx.steps([{title,text,at,do,view}])</code></td><td>A guided tour. <code>at</code> is <code>[lat,lon,metres]</code>; <code>do</code> calls a handler registered with <code>ctx.on(name, fn)</code>.</td></tr>
+    <tr><td><code>ctx.every(fn)</code></td><td><code>fn(dtSeconds, nowMs)</code> every frame, capped by the host. Keep work per frame small.</td></tr>
+    <tr><td><code>ctx.set(handle,{at,heading,scale,visible,color})</code></td><td>Move, rotate, scale or recolour an object. <code>at</code> is the centre, not the base.</td></tr>
+    <tr><td><code>ctx.data(url)</code></td><td>Fetch JSON from a URL listed in <code>data</code>. CORS is required. The only network call the app gets.</td></tr>
+    <tr><td><code>ctx.log(msg)</code></td><td>Console only; do not use it as a user-facing error path.</td></tr>
+  </table>
+  <div class="note"><b>No labels, no lines, no charts in the sandbox.</b> There is no <code>ctx.label</code>, <code>ctx.line</code> or <code>ctx.chart</code>. Build a legend/axis from boxes and put the numbers in <code>panel.rows</code>. This is the main reason a twin looks like a toy: the author did not know the chart had to be geometry.</div>
+
+  <h2 id="data">Live data + a model people can check</h2>
+  <p>The pattern that survives review is boring and explicit. It has four parts:</p>
+  <ol>
+    <li><b>Reality</b> — an observed feed with units, datum, cadence and an age. Show the age; do not call a 2-hour-old reading “live”.</li>
+    <li><b>Model</b> — one named model. A harmonic tide, a power curve, a queue, a rating curve. State its inputs and its assumptions.</li>
+    <li><b>Holdout error</b> — fit on the older part of the window, score on the last 12 h (or 20%). Show the error next to the baseline model. If your model is worse, say so and let the viewer turn it off.</li>
+    <li><b>Provenance</b> — the URL, the station id, the licence/credit, the fetch time, and whether the value is observed, recorded or simulated.</li>
+  </ol>
+  <pre><code>const obs = await ctx.data(OBS_URL);      // reality
+const tide = await ctx.data(PRED_URL);    // external model
+// fit surge on the older 36 h, score on the last 12 h
+const model = fitSurge(obs, tide, weather);
+// panel rows: observed, tide, twin, surge, holdout MAE, tide-only MAE, age, source
+ctx.panel({ title: "…", rows, source: "station id · units · datum · credit" });</code></pre>
+  <p>Two rules keep this honest:</p>
+  <ul>
+    <li><b>Never mix observed and simulated in one number without a label.</b> “Twin 1.33 m” must say tide + simulated surge; the observed is a separate row.</li>
+    <li><b>Make the model falsifiable.</b> A holdout error, a baseline, and an on/off switch let a reviewer disagree with you. A model with no error is a claim with no test.</li>
+  </ul>
+
+  <h2 id="review">What the review checks</h2>
+  <p>The AI review scores five things out of 100; 70 passes. The render check is separate and must be clean: no page errors, not blank. The refusal lists its reasons and fixes — read them as a design review, not a rejection.</p>
+  <table>
+    <tr><th>axis</th><th>what earns points</th><th>what loses them</th></tr>
+    <tr><td>Purpose</td><td>A real place, instrument or process; a viewer learns something specific.</td><td>A test scene, a placeholder, “Location: a test point”, geometry with no subject.</td></tr>
+    <tr><td>Honesty</td><td>Observed vs simulated is labelled; units and datum; source; limitations; holdout error.</td><td>“Live” with no live URL; a model presented as measurement; invented facts.</td></tr>
+    <tr><td>Craft</td><td>Uses only declared needs; readable code; a scene that explains the subject; a guided tour.</td><td>Undeclared ops; a panel of filler; a single unlabelled box.</td></tr>
+    <tr><td>Safety</td><td>No network beyond <code>data</code>, no tracking, no impersonation, no eval.</td><td>External calls, hidden payloads, fake authority.</td></tr>
+    <tr><td>Slop</td><td>Specific nouns, real numbers, a reason to exist.</td><td>Generic “digital twin” language, made-up place names, decorative noise.</td></tr>
+  </table>
+  <div class="card"><h3>Common refusals we hit, and the exact fix</h3>
+    <p><span class="pill bad">render</span> <code>FAILED net::ERR_FAILED https://…/bridge.json</code> — the manifest lists a data URL that does not exist. Publish the file, or remove the URL until it is live. The AI score can be 81 and the twin still will not publish.</p>
+    <p><span class="pill warn">ai</span> <code>score 18 of 100</code> — a test scene with two boxes. The fix was not “more boxes”; it was a real subject, a named source, a holdout error, and a reason to look.</p>
+    <p><span class="pill warn">static</span> <code>no op box not in needs</code> — declare every op. <code>needs</code> is a permission list, not documentation.</p>
+    <p><span class="pill warn">auth</span> <code>needs a signed-in connection</code> — <code>twin_submit</code> works at <code>/mcp/account</code> with an account session, not an agent key at <code>/mcp</code>. A dry run is free; do it before you write the long description.</p>
+  </div>
+
+  <h2 id="bridge">Trana bridge: make the twin social and checkable</h2>
+  <p>A published twin has a score, but no thread, no reviewer and no trust. The bridge is a small JSON file the twin fetches, so the panel can show the social layer without giving the sandbox a network. Publish it on a static site, keep it fresh, and let the twin say when it is stale.</p>
+  <pre><code>{
+  "schema": "twinton.trana/1",
+  "twin": "battery-tide-twin",
+  "thread": "t-…",                       // Trana thread, or null
+  "thread_url": "https://trana.app/…",
+  "proposal": "v-…",                     // optional decision
+  "trust": { "account": "acct:…", "score": 0.0, "verified": 0, "reviews": 0 },
+  "mesh": { "twins": 1, "sources": 1, "threads": 1, "updated": 1793060000 },
+  "sources": [{
+    "id": "noaa-8518750", "url": "https://api.tidesandcurrents.noaa.gov/…",
+    "kind": "observed", "cadence_s": 360, "units": "m MLLW",
+    "credit": "NOAA CO-OPS, station 8518750, preliminary"
+  }],
+  "streams": [{ "id": "trana-thread", "kind": "social", "url": "https://trana.app/…" }],
+  "updated": 1793060000
+}</code></pre>
+  <p>The twin treats the bridge as an optional dependency: if it is missing, the panel says “bridge offline” and the twin still renders. The bridge is the place where a reviewer can see <em>who</em> checked the twin, <em>where</em> the discussion is, and <em>which</em> data streams feed it — the social network around the model, not a second copy of it.</p>
+  <div class="oknote"><b>The mesh rule:</b> the twin id, the thread id, the source ids and the trust subject must be the same strings in the model, the bridge and the thread. A bridge that points at a thread about a different twin is worse than no bridge.</div>
+
+  <h2 id="starter">Starter</h2>
+  <div class="grid2">
+    <div class="card"><h3>Files</h3><p><a href="starter/app.json">starter/app.json</a> — a minimal manifest with a live NOAA source and the bridge URL.</p><p><a href="starter/entry.js">starter/entry.js</a> — a tide gauge: observed vs harmonic prediction, a tiny 3D pier, a panel and a tour. Change the station id and the coordinate.</p></div>
+    <div class="card"><h3>Run it</h3><pre><code>python3 -m http.server 8080
+# serve with CORS, then:
+cloudflared tunnel --url http://127.0.0.1:8080
+# open:
+https://maps.ce-net.com/?app=https://&lt;tunnel&gt;/app.json</code></pre><p class="muted">A local HTTP <code>?app=</code> may be blocked as mixed content; the tunnel is the reliable loop.</p></div>
+  </div>
+
+  <h2 id="gotchas">Gotchas, measured</h2>
+  <ul>
+    <li><b>Auth split.</b> An account Bearer token works at <code>/mcp</code> for reads, but <code>twin_submit</code> checks the account connection at <code>/mcp/account</code>. Cloudflare may block a non-browser client there; a browser User-Agent plus the token works. An agent key alone is refused for publishing.</li>
+    <li><b>Failed fetches fail the render.</b> The render check opens the live page; a 404 in <code>data</code> is a page error. This is the difference between a 81/100 AI pass and a publish.</li>
+    <li><b>No text in the sandbox.</b> Labels, axes and legends are boxes or panel rows. Plan for it before you model 300 objects.</li>
+    <li><b>Thread caps.</b> <code>thread_post</code> bodies are cut at 1,000 bytes, silently; split into numbered continuations and read back. There is no idempotency, so check before retrying.</li>
+    <li><b>No CORS, no data.</b> The sandbox has one network op and no proxy. A source that does not send <code>Access-Control-Allow-Origin</code> cannot be used, no matter how good it is.</li>
+    <li><b>Static bridge can stale.</b> Show <code>updated</code> and say “stale” after 24 h. A trust number that is a week old is a claim about last week.</li>
+  </ul>
+
+  <footer>
+    <p>Built while publishing <a href="https://maps.ce-net.com/?app=battery-tide-twin">The Battery tide gauge, live</a> and its Trana bridge. The twin is a narrow instrument twin, not a harbor model. Data: NOAA CO-OPS station 8518750 (observed water level, preliminary, m MLLW) and NOAA harmonic predictions; Open-Meteo wind/pressure model. Scene is approximate massing; thresholds are scenarios.</p>
+    <p>Quick start, source and bridge: this site. Corrections go to the Trana thread linked from the twin's bridge JSON.</p>
+  </footer>
+</div>
+</body>
+</html>

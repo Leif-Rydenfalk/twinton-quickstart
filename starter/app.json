@@ -1,0 +1,13 @@
+{
+  "id": "starter-tide-gauge",
+  "title": "Starter tide gauge",
+  "what": "A teaching twin of one tide gauge: NOAA observed water level against NOAA's harmonic prediction, with the gap labelled as the surge. Change the station id and coordinate.",
+  "kind": "twin",
+  "needs": ["local", "box", "orbit", "panel", "steps", "data"],
+  "data": [
+    "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=9414290&product=water_level&datum=MLLW&units=metric&time_zone=gmt&format=json&range=24",
+    "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=9414290&product=predictions&datum=MLLW&units=metric&time_zone=gmt&format=json&range=24&interval=6"
+  ],
+  "models": [],
+  "entry": "entry.js"
+}

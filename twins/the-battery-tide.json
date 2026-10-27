@@ -1,0 +1,43 @@
+{
+  "schema": "twinton.trana/1",
+  "twin": "battery-tide-twin",
+  "title": "The Battery tide gauge, live",
+  "thread": null,
+  "thread_url": null,
+  "proposal": null,
+  "trust": {
+    "account": "acct:60b4336c10ffec07",
+    "score": 0.0,
+    "verified": 0,
+    "reviews": 0,
+    "last_review": null
+  },
+  "mesh": {
+    "twins": 1,
+    "sources": 1,
+    "threads": 0,
+    "updated": 1793060241
+  },
+  "sources": [
+    {
+      "id": "noaa-8518750",
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8518750&product=water_level&datum=MLLW&units=metric&time_zone=gmt&format=json&range=48",
+      "kind": "observed",
+      "cadence_s": 360,
+      "units": "m MLLW",
+      "credit": "NOAA CO-OPS, station 8518750, preliminary"
+    }
+  ],
+  "streams": [
+    {
+      "id": "trana-thread",
+      "kind": "social",
+      "url": null,
+      "state": "not posted yet"
+    }
+  ],
+  "accuracy": {
+    "note": "computed in the twin from the same 48 h NOAA window; holdout is the last 12 h"
+  },
+  "updated": 1793060241
+}
