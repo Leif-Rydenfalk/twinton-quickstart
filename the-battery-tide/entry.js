@@ -31,9 +31,9 @@ export async function start(ctx) {
 
   // ---------------------------------------------------------------- helpers
   const box = (size, at, color, emissive, heading = 0) =>
-    Promise.resolve(ctx.box({ frame: f, size, at, color, emissive, heading })).catch(() => null);
+    Promise.resolve(ctx.box({ frame: f, size, at, color, emissive: emissive || "#0a0f14", heading })).catch(() => null);
   const boxA = (size, at, color, emissive, heading = 0) =>
-    ctx.box({ frame: f, size, at, color, emissive, heading });
+    ctx.box({ frame: f, size, at, color, emissive: emissive || "#0a0f14", heading });
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lerp = (a, b, t) => a + (b - a) * t;
   const rad = (d) => d * Math.PI / 180;
@@ -122,15 +122,25 @@ export async function start(ctx) {
     const train = rows.filter((r) => r.t <= end - 12 * 3600e3);
     const test = rows.filter((r) => r.t > end - 12 * 3600e3);
     if (train.length < 24 || test.length < 8) return null;
-    const c = fitRows(train);
-    const err = (r, twin) => Math.abs(r.o - (r.p + (twin ? applySurge(c, r) : 0)));
-    const maeTwin = test.reduce((a, r) => a + err(r, true), 0) / test.length;
-    const maeTide = test.reduce((a, r) => a + err(r, false), 0) / test.length;
-    const bias = test.reduce((a, r) => a + (r.o - (r.p + applySurge(c, r))), 0) / test.length;
+    const cWind = fitRows(train);
+    // Two honest challengers to the wind fit: no surge at all, and persistence of the last three hours
+    // of the training window. The twin uses the one with the lowest holdout error, and says which.
+    const last6 = train.filter((r) => r.t > train[train.length - 1].t - 3 * 3600e3);
+    const persist = last6.length ? last6.reduce((a, r) => a + r.res, 0) / last6.length : 0;
+    const candidates = [
+      { name: "tide-only", c: [0, 0, 0, 0] },
+      { name: "persistence", c: [persist, 0, 0, 0] },
+      ...(cWind ? [{ name: "wind/pressure", c: cWind }] : []),
+    ];
+    const maeOf = (c) => test.reduce((a, r) => a + Math.abs(r.o - (r.p + applySurge(c, r))), 0) / test.length;
+    let best = candidates[0], maeTwin = maeOf(best.c);
+    for (const k of candidates.slice(1)) { const m = maeOf(k.c); if (m < maeTwin - 1e-9) { best = k; maeTwin = m; } }
+    const maeTide = maeOf(candidates[0].c);
+    const bias = test.reduce((a, r) => a + (r.o - (r.p + applySurge(best.c, r))), 0) / test.length;
     const mean = test.reduce((a, r) => a + r.o, 0) / test.length;
     const ss = test.reduce((a, r) => a + (r.o - mean) ** 2, 0);
-    const sr = test.reduce((a, r) => a + (r.o - (r.p + applySurge(c, r))) ** 2, 0);
-    return { c, maeTwin, maeTide, bias, n: test.length, r2: ss > 0 ? 1 - sr / ss : null, trained: train.length };
+    const sr = test.reduce((a, r) => a + (r.o - (r.p + applySurge(best.c, r))) ** 2, 0);
+    return { c: best.c, chosen: best.name, persist, maeTwin, maeTide, bias, n: test.length, r2: ss > 0 ? 1 - sr / ss : null, trained: train.length };
   }
 
   async function load(manual = false) {
@@ -198,9 +208,9 @@ export async function start(ctx) {
   // ---------------------------------------------------------------- scene
   // Dynamic objects first so they exist when the animation starts.
   S.water = await boxA([1100, 0.25, 560], [0, 1.2 - 0.25, 348], C.water, "#03101c");
-  S.ptrObs = await boxA([14, 0.22, 0.9], [-140, 0.4 + 1.2 * 6, 66.5], C.obs, "#1b6f86");
-  S.ptrPred = await boxA([14, 0.16, 0.9], [-140, 0.4 + 1.1 * 6, 66.0], C.tide, "#6b4a0d");
-  S.ptrTwin = await boxA([9, 0.12, 0.9], [-140, 0.4 + 1.2 * 6, 65.5], C.twin, "#3a2455");
+  S.ptrObs = await boxA([14, 0.22, 0.9], [-80, 0.4 + 1.2 * 6, 66.5], C.obs, "#1b6f86");
+  S.ptrPred = await boxA([14, 0.16, 0.9], [-80, 0.4 + 1.1 * 6, 66.0], C.tide, "#6b4a0d");
+  S.ptrTwin = await boxA([9, 0.12, 0.9], [-80, 0.4 + 1.2 * 6, 65.5], C.twin, "#3a2455");
   S.float = await boxA([2.2, 0.3, 2.2], [132, 0.4 + 1.2, 150], "#d8dee8", "#20252c");
   S.beacon = await boxA([2.4, 2.4, 2.4], [140, 5.8, 150], "#8a8f87", "#20252c");
 
@@ -250,8 +260,8 @@ export async function start(ctx) {
 
   // Tide staff: 18 m tall, 6x vertical, bands at 3 m (0.5 m of water) each.
   const bands = ["#2ecc71", "#8bd17c", "#f5b041", "#e67e22", "#e74c3c", "#8e44ad"];
-  for (let i = 0; i < 6; i++) box([1.8, 3, 1.8], [-140, 0.4 + i * 3, 66], bands[i], "#101418");
-  box([2.4, 0.4, 2.4], [-140, 18.4, 66], "#d8dee8");
+  for (let i = 0; i < 6; i++) box([1.8, 3, 1.8], [-80, 0.4 + i * 3, 66], bands[i], "#101418");
+  box([2.4, 0.4, 2.4], [-80, 18.4, 66], "#d8dee8");
 
   // Castle Clinton: a low circular fort on the promenade (approximate massing).
   for (let i = 0; i < 12; i++) {
@@ -320,12 +330,12 @@ export async function start(ctx) {
     const rows = [
       ["Observed (NOAA)", S.obsV == null ? "—" : `${fmt(S.obsV)} m MLLW`],
       ["Tide (NOAA model)", S.predV == null ? "—" : `${fmt(S.predV)} m`],
-      ["Twin (tide + surge)", S.twinV == null ? "—" : `${fmt(S.twinV)} m`],
+      ["Twin (selected)", S.twinV == null ? "—" : `${fmt(S.twinV)} m`],
       ["Surge, observed", S.obsV != null && S.predV != null ? `${fmt(S.obsV - S.predV)} m` : "—"],
       ["Surge, modelled", S.surgeV == null ? "—" : `${fmt(S.surgeV)} m`],
       ["Holdout MAE", S.model ? `${fmt(S.model.maeTwin, 3)} m` : "—"],
       ["Tide-only MAE", S.model ? `${fmt(S.model.maeTide, 3)} m` : "—"],
-      ["Surge model", S.model ? (S.model.maeTwin <= S.model.maeTide ? "beats tide-only" : "does not beat tide-only") : "—"],
+      ["Twin model", S.model ? (S.model.chosen === "tide-only" ? "tide-only (surge did not earn it)" : `${S.model.chosen}${S.model.maeTwin < S.model.maeTide ? " · beats tide-only" : " · does not beat tide-only"}`) : "—"],
       ["Vertical scale", "6× on staff + chart"],
       ["Gate (scenario)", gateState()],
       ["Observation age", age == null ? "—" : `${age} s`],
@@ -362,9 +372,9 @@ export async function start(ctx) {
 
   function updateMarkers() {
     const lvl = S.obsV ?? S.level;
-    if (S.ptrObs) ctx.set(S.ptrObs, { at: [-140, 0.4 + clamp(lvl, 0, 3) * 6, 66.5] });
-    if (S.ptrPred && S.predV != null) ctx.set(S.ptrPred, { at: [-140, 0.4 + clamp(S.predV, 0, 3) * 6, 66.0] });
-    if (S.ptrTwin && S.twinV != null) ctx.set(S.ptrTwin, { at: [-140, 0.4 + clamp(S.twinV, 0, 3) * 6, 65.5] });
+    if (S.ptrObs) ctx.set(S.ptrObs, { at: [-80, 0.4 + clamp(lvl, 0, 3) * 6, 66.5] });
+    if (S.ptrPred && S.predV != null) ctx.set(S.ptrPred, { at: [-80, 0.4 + clamp(S.predV, 0, 3) * 6, 66.0] });
+    if (S.ptrTwin && S.twinV != null) ctx.set(S.ptrTwin, { at: [-80, 0.4 + clamp(S.twinV, 0, 3) * 6, 65.5] });
     if (S.float) ctx.set(S.float, { at: [132, 0.4 + clamp(lvl, 0, 3), 150] });
     if (S.beacon) ctx.set(S.beacon, { color: bridgeState().color });
   }
@@ -390,13 +400,13 @@ export async function start(ctx) {
   // The host's ctx.steps reads `at` and `view` (globe.js) to fly the camera; keep them even though
   // the minimal {title,text} shape is what the public quick start documents.
   const steps = [
-    { title: "One gauge, one place", text: "NOAA station 8518750 sits at The Battery, 40.7006 N, 74.0142 W. It measures the harbor every six minutes, in metres above MLLW. The cyan surface is that observation.", at: [LAT, LON, 190], view: { heading: 0, tilt: 22 } },
-    { title: "The tide is already a model", text: "The amber pointer is NOAA's harmonic tide prediction for the same moment. The gap between cyan and amber is the surge: wind, pressure and weather that the tide table cannot know.", at: [LAT, LON, 260], view: { heading: 0, tilt: 20 } },
-    { title: "The twin fits the gap", text: "The twin fits the surge to Open-Meteo wind and pressure on the older 36 hours, then scores itself on the last 12. If the surge model does not beat the tide alone, the panel says so. Use the Gates button in the panel to close the scenario gates.", at: [LAT, LON, 210], view: { heading: 0, tilt: 22 } },
-    { title: "A twin needs a reviewer", text: "This one carries its NOAA source, its holdout error, and a Trana bridge snapshot where people can check it. The violet pointer is tide + surge; the bridge is the social layer, and it says when it is stale.", at: [LAT, LON, 140], view: { heading: 0, tilt: 18 } },
+    { title: "One gauge, one place", text: "NOAA station 8518750 sits at The Battery, 40.7006 N, 74.0142 W. It measures the harbor every six minutes, in metres above MLLW. The cyan surface is that observation.", at: [LAT, LON, 260], view: { heading: 18, tilt: 25 } },
+    { title: "The tide is already a model", text: "The amber pointer is NOAA's harmonic tide prediction for the same moment. The gap between cyan and amber is the surge: wind, pressure and weather that the tide table cannot know.", at: [LAT, LON, 330], view: { heading: 10, tilt: 27 } },
+    { title: "The twin fits the gap", text: "The twin fits the surge to Open-Meteo wind and pressure on the older 36 hours, then scores itself on the last 12. If the surge model does not beat the tide alone, the panel says so. Use the Gates button in the panel to close the scenario gates.", at: [LAT, LON, 290], view: { heading: 24, tilt: 24 } },
+    { title: "A twin needs a reviewer", text: "This one carries its NOAA source, its holdout error, and a Trana bridge snapshot where people can check it. The violet pointer is tide + surge; the bridge is the social layer, and it says when it is stale.", at: [LAT, LON, 220], view: { heading: 18, tilt: 22 } },
   ];
   ctx.steps(steps);
-  ctx.orbit(LAT, LON, 200, { heading: 0, tilt: 22, min: 18 });
+  ctx.orbit(LAT, LON, 300, { heading: 18, tilt: 27, min: 18 });
 
   // ---------------------------------------------------------------- animation + live refresh
   let frame = 0, clock = 0, lastRefresh = Date.now();
