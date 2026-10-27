@@ -9,14 +9,14 @@
     "account": "acct:60b4336c10ffec07",
     "score": 0.0,
     "verified": 0,
-    "reviews": 6,
-    "last_review": 1793063921
+    "reviews": 7,
+    "last_review": 1793068932
   },
   "mesh": {
     "twins": 1,
     "sources": 3,
     "threads": 1,
-    "updated": 1793063931
+    "updated": 1793120081
   },
   "sources": [
     {
@@ -61,6 +61,10 @@
   "live": "https://maps.ce-net.com/?app=https://tiles.ce-net.com/community/battery-tide-twin/app.json",
   "docs": "https://leif-rydenfalk.github.io/twinton-quickstart/",
   "gist": "https://gist.github.com/Leif-Rydenfalk/1c0dd122d6fc3aa5bb20fe2fee20f34f",
+  "public_report": "space:global/f926dca14835-1793120057869",
+  "public_report_url": "https://trana.app/?t=space%3Aglobal%2Ff926dca14835-1793120057869",
+  "thread_vis": "members",
+  "public_report_vis": "public",
   "listing": {
     "state": "published",
     "via": "twin_submit",
@@ -69,5 +73,5 @@
     "manifest": "https://tiles.ce-net.com/community/battery-tide-twin/app.json",
     "at": 1793063917
   },
-  "updated": 1793063931
+  "updated": 1793120081
 }
