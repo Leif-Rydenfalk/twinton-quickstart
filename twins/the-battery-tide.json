@@ -9,14 +9,14 @@
     "account": "acct:60b4336c10ffec07",
     "score": 0.0,
     "verified": 0,
-    "reviews": 0,
-    "last_review": null
+    "reviews": 6,
+    "last_review": 1793063921
   },
   "mesh": {
     "twins": 1,
-    "sources": 1,
+    "sources": 3,
     "threads": 1,
-    "updated": 1793060748
+    "updated": 1793063931
   },
   "sources": [
     {
@@ -26,32 +26,48 @@
       "cadence_s": 360,
       "units": "m MLLW",
       "credit": "NOAA CO-OPS, station 8518750, preliminary"
+    },
+    {
+      "id": "noaa-pred-8518750",
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8518750&product=predictions&datum=MLLW&units=metric&time_zone=gmt&format=json&range=48&interval=6",
+      "kind": "simulated",
+      "cadence_s": 360,
+      "units": "m MLLW",
+      "credit": "NOAA CO-OPS harmonic prediction"
+    },
+    {
+      "id": "open-meteo-battery",
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=40.7006&longitude=-74.0142&current=temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl,cloud_cover&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl&past_days=2&forecast_days=1&timezone=UTC",
+      "kind": "simulated",
+      "cadence_s": 3600,
+      "units": "km/h, hPa",
+      "credit": "Open-Meteo model"
     }
   ],
   "streams": [
     {
-      "id": "noaa-8518750",
-      "kind": "observed",
-      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8518750&product=water_level&datum=MLLW&units=metric&time_zone=gmt&format=json&range=48",
-      "state": "live, 6 min"
-    },
-    {
       "id": "trana-thread",
       "kind": "social",
       "url": "https://trana.app/",
-      "state": "t-5a2f306903e5 open"
+      "state": "open"
     },
     {
       "id": "trana-proposal",
       "kind": "review",
       "url": "https://trana.app/",
-      "state": "v-6adfef7b7b31 open"
+      "state": "open"
     }
   ],
-  "accuracy": {
-    "note": "computed in the twin from the same 48 h NOAA window; holdout is the last 12 h; the bridge does not carry the numbers, it points at the twin and the thread"
-  },
-  "updated": 1793060748,
+  "live": "https://maps.ce-net.com/?app=https://tiles.ce-net.com/community/battery-tide-twin/app.json",
   "docs": "https://leif-rydenfalk.github.io/twinton-quickstart/",
-  "gist": "https://gist.github.com/Leif-Rydenfalk/1c0dd122d6fc3aa5bb20fe2fee20f34f"
+  "gist": "https://gist.github.com/Leif-Rydenfalk/1c0dd122d6fc3aa5bb20fe2fee20f34f",
+  "listing": {
+    "state": "published",
+    "via": "twin_submit",
+    "score": 88,
+    "open": "https://maps.ce-net.com/?app=https://tiles.ce-net.com/community/battery-tide-twin/app.json",
+    "manifest": "https://tiles.ce-net.com/community/battery-tide-twin/app.json",
+    "at": 1793063917
+  },
+  "updated": 1793063931
 }
