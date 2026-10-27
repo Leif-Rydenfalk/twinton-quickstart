@@ -9,14 +9,14 @@
     "account": "acct:60b4336c10ffec07",
     "score": 0.0,
     "verified": 0,
-    "reviews": 7,
-    "last_review": 1793068932
+    "reviews": 8,
+    "last_review": 1793120279
   },
   "mesh": {
     "twins": 1,
     "sources": 3,
     "threads": 1,
-    "updated": 1793120081
+    "updated": 1793120290
   },
   "sources": [
     {
@@ -73,5 +73,5 @@
     "manifest": "https://tiles.ce-net.com/community/battery-tide-twin/app.json",
     "at": 1793063917
   },
-  "updated": 1793120081
+  "updated": 1793120290
 }
