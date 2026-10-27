@@ -327,20 +327,21 @@ export async function start(ctx) {
   function renderPanel() {
     const b = S.bridge, bs = bridgeState();
     const age = S.obs?.length ? Math.max(0, Math.round((Date.now() - S.obs[S.obs.length - 1].t) / 1000)) : null;
+    // The panel shows the first four rows without scrolling, so the first four are the whole state:
+    // reality, model quality, surge, and the scenario gate. The detailed rows follow below.
     const rows = [
+      ["Now", S.obsV == null ? "no live reading" : `${fmt(S.obsV)} obs · ${fmt(S.predV)} tide · ${fmt(S.twinV)} twin m`],
+      ["Model", S.model ? `${S.model.chosen} · holdout ${fmt(S.model.maeTwin, 3)} vs tide ${fmt(S.model.maeTide, 3)} m` : "—"],
+      ["Surge", S.obsV == null || S.predV == null ? "—" : `${fmt(S.obsV - S.predV)} obs · ${fmt(S.surgeV)} model m`],
+      ["Gate", gateState()],
       ["Observed (NOAA)", S.obsV == null ? "—" : `${fmt(S.obsV)} m MLLW`],
       ["Tide (NOAA model)", S.predV == null ? "—" : `${fmt(S.predV)} m`],
       ["Twin (selected)", S.twinV == null ? "—" : `${fmt(S.twinV)} m`],
-      ["Surge, observed", S.obsV != null && S.predV != null ? `${fmt(S.obsV - S.predV)} m` : "—"],
-      ["Twin model", S.model ? (S.model.chosen === "tide-only" ? "tide-only (surge did not earn it)" : `${S.model.chosen}${S.model.maeTwin < S.model.maeTide ? " · beats tide-only" : " · does not beat tide-only"}`) : "—"],
-      ["Holdout MAE", S.model ? `${fmt(S.model.maeTwin, 3)} m` : "—"],
-      ["Tide-only MAE", S.model ? `${fmt(S.model.maeTide, 3)} m` : "—"],
-      ["Surge, modelled", S.surgeV == null ? "—" : `${fmt(S.surgeV)} m`],
-      ["Vertical scale", "6× on staff + chart"],
-      ["Gate (scenario)", gateState()],
-      ["Observation age", age == null ? "—" : `${age} s`],
       ["Trana bridge", bs.text],
+      ["Observation age", age == null ? "—" : `${age} s`],
       ["Mesh (snapshot)", b?.mesh ? `${b.mesh.twins} twin · ${b.mesh.sources} source` : "—"],
+      ["Vertical scale", "6× on staff + chart"],
+      ["Twin model", S.model ? (S.model.chosen === "tide-only" ? "tide-only (surge did not earn it)" : `${S.model.chosen}${S.model.maeTwin < S.model.maeTide ? " · beats tide-only" : " · does not beat tide-only"}`) : "—"],
     ];
     const actions = [
       { label: "Refresh", onClick: () => load(true) },
