@@ -1,0 +1,22 @@
+{
+  "id": "battery-tide-twin",
+  "title": "The Battery tide gauge, live",
+  "what": "The Battery, New York Harbor: NOAA's observed water level checked every six minutes against a harmonic tide plus a wind-and-pressure surge model, with a Trana review/trust snapshot from a public gist.",
+  "kind": "twin",
+  "needs": [
+    "local",
+    "box",
+    "orbit",
+    "panel",
+    "steps",
+    "data"
+  ],
+  "data": [
+    "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8518750&product=water_level&datum=MLLW&units=metric&time_zone=gmt&format=json&range=48",
+    "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8518750&product=predictions&datum=MLLW&units=metric&time_zone=gmt&format=json&range=48&interval=6",
+    "https://api.open-meteo.com/v1/forecast?latitude=40.7006&longitude=-74.0142&current=temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl,cloud_cover&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl&past_days=2&forecast_days=1&timezone=UTC",
+    "https://gist.githubusercontent.com/Leif-Rydenfalk/1c0dd122d6fc3aa5bb20fe2fee20f34f/raw/the-battery-tide.json"
+  ],
+  "models": [],
+  "entry": "entry.js"
+}
