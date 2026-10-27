@@ -45,7 +45,7 @@ export async function start(ctx) {
     obs: null, pred: null, wx: null, bridge: null, model: null,
     obsV: null, predV: null, twinV: null, surgeV: null, level: 1.2, target: 1.2,
     range: 48, surgeOn: true, gatesClosed: false, loading: false, lastLoad: 0,
-    fetchedAt: null, error: null, chart: [], objects: [], crests: [],
+    fetchedAt: null, error: null, chart: [], objects: [], crests: [], moon: [],
   };
 
   function nearest(series, t, tol = 15 * 60e3) {
@@ -211,8 +211,8 @@ export async function start(ctx) {
   S.ptrObs = await boxA([14, 0.22, 0.9], [-80, 0.4 + 1.2 * 6, 66.5], C.obs, "#1b6f86");
   S.ptrPred = await boxA([14, 0.16, 0.9], [-80, 0.4 + 1.1 * 6, 66.0], C.tide, "#6b4a0d");
   S.ptrTwin = await boxA([9, 0.12, 0.9], [-80, 0.4 + 1.2 * 6, 65.5], C.twin, "#3a2455");
-  S.float = await boxA([2.2, 0.3, 2.2], [132, 0.4 + 1.2, 150], "#d8dee8", "#20252c");
-  S.beacon = await boxA([2.4, 2.4, 2.4], [140, 5.8, 150], "#8a8f87", "#20252c");
+  S.float = await boxA([2.2, 0.3, 2.2], [62, 0.4 + 1.2, 120], "#d8dee8", "#20252c");
+  S.beacon = await boxA([2.4, 2.4, 2.4], [70, 5.8, 120], "#8a8f87", "#20252c");
 
   S.gates = [];
   for (const x of [-70, 70]) {
@@ -241,22 +241,22 @@ export async function start(ctx) {
   box([1000, 0.4, 720], [0, -0.2, -300], C.land);                       // land north of the seawall
   box([1000, 0.25, 60], [0, 0.15, 30], C.walk);                          // Battery promenade
   box([1000, 2.6, 8], [0, 0.4, 64], C.wall);                             // seawall, crest ~3.0 m
-  box([16, 0.6, 92], [140, 0.3, 114], "#39424f");                        // gauge pier
-  for (let i = 0; i < 9; i++) box([1.2, 7, 1.2], [132 + i * 2, -3, 78 + i * 8], "#2a333f");
+  box([16, 0.6, 92], [70, 0.3, 100], "#39424f", "#1a2028");                        // gauge pier
+  for (let i = 0; i < 9; i++) box([1.2, 7, 1.2], [62 + i * 2, -3, 64 + i * 8], "#2a333f");
   box([240, 18, 1.2], [0, 0.4, -101], "#10161d");                        // chart backboard
   for (const th of [1.5, 2.0, 2.5]) box([240, 0.08, 0.9], [0, 0.4 + th * 5, -95], th >= 2.5 ? C.bad : th >= 2.0 ? C.tide : "#8a8f87");
   box([240, 0.2, 1.4], [0, 0.3, -94], "#38424e");                        // chart baseline
 
   // The gauge house: a small, real-looking instrument shelter with a stilling well cut away.
-  box([16, 5, 12], [140, 0.4, 150], C.gauge);
-  box([18, 0.5, 14], [140, 5.4, 150], "#aeb7c2");
-  box([4, 3, 0.3], [140, 0.6, 143.8], "#2a333f");                        // door
-  box([2.5, 1.2, 0.2], [146, 3.2, 143.8], C.win, "#6b4a0d");             // window
-  box([3, 7, 3], [131, 0.4, 150], "#0d1218");                            // stilling well
-  box([0.3, 12, 0.3], [126, 5.4, 146], "#8a8f87");                       // sensor mast
-  box([2.4, 0.2, 2.4], [126, 17.4, 146], "#b7c0ca");                     // antenna
-  box([5, 0.2, 3], [135, 6, 145], "#1b3a5a", "#0a1a2a");                 // solar panel
-  box([0.5, 0.5, 0.5], [126, 18, 146], "#ff5a52", "#6b1010");            // beacon lamp
+  box([16, 5, 12], [70, 0.4, 120], C.gauge, "#2a3038");
+  box([18, 0.5, 14], [70, 5.4, 120], "#aeb7c2", "#2a3038");
+  box([4, 3, 0.3], [70, 0.6, 113.8], "#2a333f");                        // door
+  box([2.5, 1.2, 0.2], [76, 3.2, 113.8], C.win, "#6b4a0d");             // window
+  box([3, 7, 3], [61, 0.4, 120], "#0d1218");                            // stilling well
+  box([0.3, 12, 0.3], [56, 5.4, 116], "#8a8f87");                       // sensor mast
+  box([2.4, 0.2, 2.4], [56, 17.4, 116], "#b7c0ca");                     // antenna
+  box([5, 0.2, 3], [65, 6, 115], "#1b3a5a", "#0a1a2a");                 // solar panel
+  box([0.5, 0.5, 0.5], [56, 18, 116], "#ff5a52", "#6b1010");            // beacon lamp
 
   // Tide staff: 18 m tall, 6x vertical, bands at 3 m (0.5 m of water) each.
   const bands = ["#2ecc71", "#8bd17c", "#f5b041", "#e67e22", "#e74c3c", "#8e44ad"];
@@ -332,10 +332,10 @@ export async function start(ctx) {
       ["Tide (NOAA model)", S.predV == null ? "—" : `${fmt(S.predV)} m`],
       ["Twin (selected)", S.twinV == null ? "—" : `${fmt(S.twinV)} m`],
       ["Surge, observed", S.obsV != null && S.predV != null ? `${fmt(S.obsV - S.predV)} m` : "—"],
-      ["Surge, modelled", S.surgeV == null ? "—" : `${fmt(S.surgeV)} m`],
+      ["Twin model", S.model ? (S.model.chosen === "tide-only" ? "tide-only (surge did not earn it)" : `${S.model.chosen}${S.model.maeTwin < S.model.maeTide ? " · beats tide-only" : " · does not beat tide-only"}`) : "—"],
       ["Holdout MAE", S.model ? `${fmt(S.model.maeTwin, 3)} m` : "—"],
       ["Tide-only MAE", S.model ? `${fmt(S.model.maeTide, 3)} m` : "—"],
-      ["Twin model", S.model ? (S.model.chosen === "tide-only" ? "tide-only (surge did not earn it)" : `${S.model.chosen}${S.model.maeTwin < S.model.maeTide ? " · beats tide-only" : " · does not beat tide-only"}`) : "—"],
+      ["Surge, modelled", S.surgeV == null ? "—" : `${fmt(S.surgeV)} m`],
       ["Vertical scale", "6× on staff + chart"],
       ["Gate (scenario)", gateState()],
       ["Observation age", age == null ? "—" : `${age} s`],
@@ -354,9 +354,10 @@ export async function start(ctx) {
       { name: "Open-Meteo", sub: S.wx ? "wind + pressure · hourly model" : "unavailable", color: C.twin },
       { name: "Trana bridge (snapshot)", sub: b ? `${b.thread || "no thread yet"} · ${b.trust?.score == null ? "unverified" : "trust " + b.trust.score}` : "offline", color: bs.color },
     ];
+    const summary = S.obsV == null ? "No live reading." : `Observed ${fmt(S.obsV)} m · tide ${fmt(S.predV)} m · twin ${fmt(S.twinV)} m · holdout ${fmt(S.model?.maeTwin, 3)} m vs tide ${fmt(S.model?.maeTide, 3)} m · ${S.model?.chosen || "no model"}.`;
     ctx.panel({
       title: "The Battery tide gauge, live",
-      sub: "One instrument, one live feed, one model: observed vs tide + surge every six minutes. Vertical scale is 6× on the staff and chart bars. Trana is ce-net's public review/thread layer; the bridge is a snapshot, not a measurement. Ferry and wave crests are illustrative. Scene is approximate massing; thresholds are scenarios.",
+      sub: summary + " Vertical scale is 6× on the staff and chart bars. Trana is ce-net's public review/thread layer; the bridge is a snapshot, not a measurement. Ferry and wave crests are illustrative. Scene is approximate massing; thresholds are scenarios.",
       rows, actions, list,
       source: S.error ? S.error : "NOAA CO-OPS station 8518750 (observed water level, preliminary), NOAA harmonic predictions, Open-Meteo wind/pressure model. Holdout = last 12 h of a 48 h fit. Bridge: public gist snapshot, schema twinton.trana/1 — social metadata, not a measurement.",
     });
@@ -375,7 +376,7 @@ export async function start(ctx) {
     if (S.ptrObs) ctx.set(S.ptrObs, { at: [-80, 0.4 + clamp(lvl, 0, 3) * 6, 66.5] });
     if (S.ptrPred && S.predV != null) ctx.set(S.ptrPred, { at: [-80, 0.4 + clamp(S.predV, 0, 3) * 6, 66.0] });
     if (S.ptrTwin && S.twinV != null) ctx.set(S.ptrTwin, { at: [-80, 0.4 + clamp(S.twinV, 0, 3) * 6, 65.5] });
-    if (S.float) ctx.set(S.float, { at: [132, 0.4 + clamp(lvl, 0, 3), 150] });
+    if (S.float) ctx.set(S.float, { at: [62, 0.4 + clamp(lvl, 0, 3), 120] });
     if (S.beacon) ctx.set(S.beacon, { color: bridgeState().color });
   }
 
@@ -415,7 +416,8 @@ export async function start(ctx) {
     S.level = lerp(S.level, S.target, Math.min(1, dt * 1.8));
     if (frame % 2 === 0) {
       ctx.set(S.water, { at: [0, S.level - 0.25, 348] });
-      ctx.set(S.float, { at: [132, 0.4 + S.level, 150] });
+      ctx.set(S.float, { at: [62, 0.4 + S.level, 120] });
+      for (let i = 0; i < S.moon.length; i++) ctx.set(S.moon[i], { at: [0, S.level + 0.04, 190 + i * 38] });
     }
     if (frame % 3 === 0) {
       const t = clock, x = -300 + ((t * 4.2) % 600);
