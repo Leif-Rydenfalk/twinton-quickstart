@@ -2,9 +2,9 @@
   "schema": "twinton.trana/1",
   "twin": "battery-tide-twin",
   "title": "The Battery tide gauge, live",
-  "thread": null,
-  "thread_url": null,
-  "proposal": null,
+  "thread": "t-5a2f306903e5",
+  "thread_url": "https://trana.app/",
+  "proposal": "v-6adfef7b7b31",
   "trust": {
     "account": "acct:60b4336c10ffec07",
     "score": 0.0,
@@ -15,8 +15,8 @@
   "mesh": {
     "twins": 1,
     "sources": 1,
-    "threads": 0,
-    "updated": 1793060241
+    "threads": 1,
+    "updated": 1793060748
   },
   "sources": [
     {
@@ -30,14 +30,28 @@
   ],
   "streams": [
     {
+      "id": "noaa-8518750",
+      "kind": "observed",
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8518750&product=water_level&datum=MLLW&units=metric&time_zone=gmt&format=json&range=48",
+      "state": "live, 6 min"
+    },
+    {
       "id": "trana-thread",
       "kind": "social",
-      "url": null,
-      "state": "not posted yet"
+      "url": "https://trana.app/",
+      "state": "t-5a2f306903e5 open"
+    },
+    {
+      "id": "trana-proposal",
+      "kind": "review",
+      "url": "https://trana.app/",
+      "state": "v-6adfef7b7b31 open"
     }
   ],
   "accuracy": {
-    "note": "computed in the twin from the same 48 h NOAA window; holdout is the last 12 h"
+    "note": "computed in the twin from the same 48 h NOAA window; holdout is the last 12 h; the bridge does not carry the numbers, it points at the twin and the thread"
   },
-  "updated": 1793060241
+  "updated": 1793060748,
+  "docs": "https://leif-rydenfalk.github.io/twinton-quickstart/",
+  "gist": "https://gist.github.com/Leif-Rydenfalk/1c0dd122d6fc3aa5bb20fe2fee20f34f"
 }
